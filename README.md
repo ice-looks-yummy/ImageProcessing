@@ -76,3 +76,29 @@ Original, Grayscale, Gaussian Blur, Median Blur, Sharpen, Sobel Edge Detection (
 ## Equations and kernels
 
 Gaussian blur uses `G(x,y) = 1/(2πσ²) exp(−(x²+y²)/(2σ²))`; its normalized discrete kernel is generated from the current kernel size and sigma. Median blur is a rank operation rather than a weighted convolution. Sharpen uses `[[0,−s,0],[−s,1+4s,−s],[0,−s,0]]`, where `s` is the strength. Sobel uses the standard 3×3 X and Y derivative kernels and combines them as `sqrt(Gx² + Gy²)`. Canny is a pipeline rather than a single convolution kernel. The displayed controls and equations reflect the operations used by the backend.
+
+## Additional technical filters
+
+The original twelve filters remain available in the same filter selector. Seven additional OpenCV filters use the same live processing, statistics, equation, and kernel panels:
+
+- **Laplacian Edge Detection** computes the sum of second derivatives. The 3 x 3 four-neighbor stencil is shown for the matching OpenCV aperture; expanded apertures are identified in the information panel.
+- **Bilateral Filter** uses OpenCV's edge-preserving color and spatial weights. Diameter, sigma color, and sigma space update live. It has no single fixed convolution kernel.
+- **Histogram Equalization** equalizes the L channel in CIELAB, retaining the source chroma. Its cumulative-distribution mapping is `s = (L - 1) * CDF(r)`.
+- **Emboss** convolves with `[[-2,-1,0],[-1,1,1],[0,1,2]]` and offers an adjustable strength.
+- **Cartoon Effect** combines bilateral color smoothing, median-smoothed grayscale, an adaptive threshold edge mask, and masked color.
+- **Gamma Correction** applies `g = 255 * (f / 255)^gamma` with a live gamma control from 0.1 to 3.0.
+- **Hue / Saturation Adjustment** edits HSV hue and saturation while preserving value (brightness).
+
+## Inspired-style creative presets
+
+The bottom **Instagram-Style Filters** section includes Clarendon, Gingham, Moon, Lark, Juno, Valencia, X-Pro, Lo-Fi, Hefe, Nashville, Kelvin, and Inkwell styles. These are locally computed creative effects inspired by familiar social-media photo treatments; they do not reproduce or claim to reproduce Instagram's proprietary algorithms. Each effect combines image operations such as tone, contrast, saturation, channel grading, grayscale, gamma, vignette, or smoothing. The live intensity slider blends the original and effect from 0% (original) to 100% (full effect). The section includes its own original/result previews, result statistics, download action, and comparison grid for up to six presets. Its comparison does not replace the technical-filter comparison above.
+
+## Usage
+
+1. Upload a JPG, PNG, or WEBP image in the workspace.
+2. Choose a technical filter in the existing **Filter controls** selector. Its controls appear in place; slider changes update the preview and statistics without a reload.
+3. Read the matching equation and kernel or process explanation in the reference card. Use **Filter comparison** to compare technical filters on the same source image.
+4. Use **Download result** to save the current processed image.
+5. At the bottom of the page, select an inspired-style preset and adjust its intensity. Compare up to six creative styles or download the selected style result.
+
+All processing is performed locally by the Flask application using OpenCV and NumPy. The technical and inspired-style download buttons share the same download endpoint, with a source parameter so each downloads the result shown in its own section.

@@ -43,7 +43,8 @@
           <optgroup label="Basics"><option value="original">Original</option><option value="grayscale">Grayscale</option><option value="negative">Negative / Invert</option><option value="sepia">Sepia</option></optgroup>
           <optgroup label="Smoothing & detail"><option value="gaussian">Gaussian Blur</option><option value="median">Median Blur</option><option value="sharpen">Sharpen</option></optgroup>
           <optgroup label="Edges & segmentation"><option value="sobel">Sobel Edge Detection</option><option value="canny">Canny Edge Detection</option><option value="threshold">Threshold</option></optgroup>
-          <optgroup label="Adjustments"><option value="brightness">Brightness</option><option value="contrast">Contrast</option></optgroup>
+          <optgroup label="Adjustments"><option value="brightness">Brightness</option><option value="contrast">Contrast</option><option value="gamma">Gamma Correction</option><option value="hue_saturation">Hue / Saturation Adjustment</option></optgroup>
+          <optgroup label="Additional filters"><option value="laplacian">Laplacian Edge Detection</option><option value="bilateral">Bilateral Filter</option><option value="equalize">Histogram Equalization</option><option value="emboss">Emboss</option><option value="cartoon">Cartoon Effect</option></optgroup>
         </select>
         <div id="parameter-area" class="parameter-area"><p class="muted">Upload an image to enable processing controls.</p></div>
         <div class="button-row"><a id="download-button" class="primary-button disabled" href="#" aria-disabled="true">↓ Download result</a><button id="reset-bottom" class="secondary-button" type="button" disabled>Reset filter</button></div>
@@ -62,8 +63,29 @@
       </div></div>
       <div id="comparison-grid" class="comparison-grid"><div class="comparison-empty"><span>▤</span><b>Your comparison will appear here</b><small>Select filters and run a comparison.</small></div></div>
     </section>
+    <section class="card comparison-card instagram-card" aria-labelledby="instagram-title">
+      <div class="section-heading compare-heading"><div><span class="eyebrow">CREATIVE PRESETS</span><h2 id="instagram-title">Instagram-Style Filters</h2><p>Creative photo filters inspired by classic social-media styles. These are original interpretations, not reproductions of Instagram’s proprietary algorithms.</p></div></div>
+      <div class="instagram-controls">
+        <div class="instagram-select-wrap"><label class="field-label" for="instagram-select">Select a style</label><select id="instagram-select" disabled>{% for key, label in instagram_filters.items() %}<option value="{{ key }}">{{ label }}</option>{% endfor %}</select></div>
+        <div id="instagram-parameter-area" class="parameter-area"><p class="muted">Upload an image to enable inspired-style filters.</p></div>
+      </div>
+      <div class="image-grid instagram-preview-grid">
+        <article class="image-card card"><div class="panel-heading"><div><span class="eyebrow">SOURCE</span><h2>Original image</h2></div></div><div id="instagram-original-stage" class="image-stage empty-stage"><div class="empty-art"><span>▧</span><b>Your original image</b><small>Upload an image above</small></div></div></article>
+        <article class="image-card card"><div class="panel-heading"><div><span class="eyebrow">INSPIRED STYLE</span><h2 id="instagram-result-title">Filtered preview</h2></div><span id="instagram-intensity-badge" class="pill neutral">0% intensity</span></div><div id="instagram-result-stage" class="image-stage empty-stage"><div class="empty-art"><span>✳</span><b>Creative preview</b><small>Select a style above</small></div></div></article>
+      </div>
+      <div class="stats-grid instagram-stats-grid"><section class="stats-card card"><div class="stats-title"><h3>Inspired-style result statistics</h3><span class="stat-icon violet">◈</span></div><div id="instagram-stats" class="stats-list"><p class="muted">Statistics update with the selected style and intensity.</p></div></section></div>
+      <div class="instagram-download-row"><button id="instagram-download" class="primary-button" type="button" disabled>↓ Download inspired-style result</button></div>
+      <div class="instagram-compare">
+        <div class="section-heading compare-heading"><div><span class="eyebrow">SAME ORIGINAL</span><h2>Inspired-style comparison</h2><p>Choose up to six styles to preview together.</p></div><button id="instagram-compare-button" class="primary-button" type="button" disabled>↗ Compare selected</button></div>
+        <div class="compare-toolbar"><div class="compare-options instagram-options" id="instagram-options">
+          {% for key, label in instagram_filters.items() %}<label class="check-option"><input type="checkbox" value="{{ key }}" {% if key in ['clarendon','gingham','moon'] %}checked{% endif %}><span>{{ label }}</span></label>{% endfor %}
+        </div></div>
+        <div id="instagram-comparison-grid" class="comparison-grid"><div class="comparison-empty"><span>▤</span><b>Your inspired-style comparison will appear here</b><small>Select up to six filters and run a comparison.</small></div></div>
+      </div>
+    </section>
     <footer><span>Image Processing Studio</span><span>Python · Flask · OpenCV · NumPy</span></footer>
   </main>
+  <script>window.INSTAGRAM_FILTERS = {{ instagram_filters|tojson }};</script>
   <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

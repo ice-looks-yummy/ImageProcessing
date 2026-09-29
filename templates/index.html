@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f6fa"><title>Image Processing Studio</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="/"><span class="brand-mark">IP</span><span>Image Processing <b>Studio</b></span></a>
+      <div class="top-note"><span class="live-dot"></span> Local workspace <span class="divider">·</span> OpenCV powered</div>
+    </header>
+
+    <section class="upload-strip card" aria-label="Image upload">
+      <div class="upload-copy"><span class="eyebrow">WORKSPACE</span><h1>Start with an image</h1><p>Upload a photo to explore filters, parameters, and image statistics.</p></div>
+      <label class="upload-button" for="image-file"><span class="upload-icon">↑</span><span><b>Choose image</b><small>JPG, PNG, WEBP · up to 12 MB</small></span><input id="image-file" type="file" accept="image/jpeg,image/png,image/webp"></label>
+    </section>
+    <div id="notice" class="notice" role="status" aria-live="polite"></div>
+
+    <section class="workspace" aria-label="Image workspace">
+      <div class="image-grid">
+        <article class="image-card card">
+          <div class="panel-heading"><div><span class="eyebrow">SOURCE</span><h2>Original image</h2></div><span id="original-badge" class="pill">Waiting for image</span></div>
+          <div id="original-stage" class="image-stage empty-stage"><div class="empty-art"><span>▧</span><b>Your image will appear here</b><small>Choose an image to begin</small></div></div>
+        </article>
+        <article class="image-card card">
+          <div class="panel-heading"><div><span class="eyebrow">OUTPUT</span><h2>Processed image</h2></div><span id="processing-indicator" class="pill neutral">Same as original</span></div>
+          <div id="processed-stage" class="image-stage empty-stage"><div class="empty-art"><span>✳</span><b>Processed preview</b><small>Select a filter below</small></div></div>
+        </article>
+      </div>
+      <div class="stats-grid">
+        <section class="stats-card card"><div class="stats-title"><h3>Original statistics</h3><span class="stat-icon">◉</span></div><div id="original-stats" class="stats-list"><p class="muted">Upload an image to inspect its properties.</p></div></section>
+        <section class="stats-card card"><div class="stats-title"><h3>Processed statistics</h3><span class="stat-icon violet">◈</span></div><div id="processed-stats" class="stats-list"><p class="muted">Statistics update with every filter change.</p></div></section>
+      </div>
+    </section>
+
+    <section class="controls-layout">
+      <section class="card filter-card">
+        <div class="section-heading"><div><span class="eyebrow">PROCESSING</span><h2>Filter controls</h2></div><button id="reset-button" class="text-button" type="button" disabled>↺ Reset</button></div>
+        <label class="field-label" for="filter-select">Select a filter</label>
+        <select id="filter-select" disabled>
+          <optgroup label="Basics"><option value="original">Original</option><option value="grayscale">Grayscale</option><option value="negative">Negative / Invert</option><option value="sepia">Sepia</option></optgroup>
+          <optgroup label="Smoothing & detail"><option value="gaussian">Gaussian Blur</option><option value="median">Median Blur</option><option value="sharpen">Sharpen</option></optgroup>
+          <optgroup label="Edges & segmentation"><option value="sobel">Sobel Edge Detection</option><option value="canny">Canny Edge Detection</option><option value="threshold">Threshold</option></optgroup>
+          <optgroup label="Adjustments"><option value="brightness">Brightness</option><option value="contrast">Contrast</option></optgroup>
+        </select>
+        <div id="parameter-area" class="parameter-area"><p class="muted">Upload an image to enable processing controls.</p></div>
+        <div class="button-row"><a id="download-button" class="primary-button disabled" href="#" aria-disabled="true">↓ Download result</a><button id="reset-bottom" class="secondary-button" type="button" disabled>Reset filter</button></div>
+      </section>
+      <section class="card math-card">
+        <div class="section-heading"><div><span class="eyebrow">REFERENCE</span><h2>How it works</h2></div><span class="math-mark">ƒ(x)</span></div>
+        <h3 id="equation-title">Select a filter</h3><div id="equation" class="equation">The filter equation and processing notes will appear here.</div><p id="filter-description" class="math-description">Each operation runs locally through Python and OpenCV.</p>
+        <div id="kernel-section" class="kernel-section" hidden><div class="kernel-heading"><h3 id="kernel-title">Kernel visualization</h3><span class="eyebrow">CURRENT PARAMETERS</span></div><div id="kernel-content"></div><p id="kernel-note" class="kernel-note"></p></div>
+      </section>
+    </section>
+
+    <section class="card comparison-card">
+      <div class="section-heading compare-heading"><div><span class="eyebrow">SIDE BY SIDE</span><h2>Filter comparison</h2><p>Compare several operations on the same original image.</p></div><button id="compare-button" class="primary-button" type="button" disabled>↗ Compare selected</button></div>
+      <div class="compare-toolbar"><div class="compare-options" id="compare-options">
+        {% for key in ['original','grayscale','gaussian','median','sharpen','sobel','canny','threshold','negative','sepia'] %}<label class="check-option"><input type="checkbox" value="{{ key }}" {% if key in ['original','grayscale','gaussian','sobel','canny'] %}checked{% endif %}><span>{{ filters[key].label }}</span></label>{% endfor %}
+      </div></div>
+      <div id="comparison-grid" class="comparison-grid"><div class="comparison-empty"><span>▤</span><b>Your comparison will appear here</b><small>Select filters and run a comparison.</small></div></div>
+    </section>
+    <footer><span>Image Processing Studio</span><span>Python · Flask · OpenCV · NumPy</span></footer>
+  </main>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
